@@ -1,10 +1,19 @@
 var express = require('express');
-var app = express();
+var path = require('path');
+var multer = require('multer');
+var upload = multer({ dest: path.join(__dirname + '/public/')})
 
-app.get('/', function (req, res) {
-  res.send('Hello World!');
-});
+var app = express()
 
-app.listen(8080, function () {
-  console.log('Example app listening on port 8080!');
+app.get('/', ((req, res) => {
+  res.sendFile(__dirname + '/views/index.html');
+}));
+
+app.post('/upload', upload.single('file'), ((req, res, next) => {
+  let size = {"size": req.file.size}
+  res.json(size)
+}))
+
+let listener = app.listen(process.env.PORT, function () {
+  console.log('Your app is listening on port ' + listener.address().port);
 });
